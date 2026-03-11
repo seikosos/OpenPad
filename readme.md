@@ -1,13 +1,15 @@
 # LETS TRY SOMETHING NEW
-# (lets see if someone gets that joke :troll:)
 
 # OpenPad. Universal ESP32 Controller
 > An open-source, multi-platform game controller built on the ESP32-S3.  
-> One device. USB-C or Bluetooth. PC, Switch, Wii, Android, Mac, Steam Deck — and more.
+> One device. USB-C or Bluetooth. PC, Switch, Wii, Android, Mac, Steam Deck - and more.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Platform: ESP32-S3](https://img.shields.io/badge/MCU-ESP32--S3-blue)
 ![Status: Prototype](https://img.shields.io/badge/Status-Prototype-orange)
+
+## Important:
+This project uses the Arduino IDE or use PlatformIO
 
 ## What Is OpenPad?
 OpenPad is a fully open-source game controller designed around the **ESP32-S3** microcontroller. It supports multiple output platforms over both **USB-C** and **Bluetooth**, with on-boot mode selection and a built-in motion sensor for Wii compatibility.
@@ -15,14 +17,14 @@ The goal is a single controller you can use for everything with full open access
 
 ## License
 
-MIT License — do whatever you want, just keep the attribution.
+MIT License - do whatever you want, just keep the attribution.
 
 PCB design files are additionally licensed under CERN Open Hardware License v2.
 
 ## Acknowledgements
 
 Inspired by and building on the work of:
-- [BlueRetro](https://github.com/darthcloud/BlueRetro) — open source BT adapter for retro consoles
+- [BlueRetro](https://github.com/darthcloud/BlueRetro) - open source BT adapter for retro consoles
 - [ESP32-BLE-Gamepad](https://github.com/lemmingDev/ESP32-BLE-Gamepad)
 - The wider ESP32 open hardware community
 
