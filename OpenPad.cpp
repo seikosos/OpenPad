@@ -9,6 +9,8 @@
 
 BleGamepad bleGamepad("OpenPad", "seikoso", 100);
 
+BleGamepadConfiguration *config = new BleGamepadConfiguration();
+
 struct ButtonConfig {
     int pin;
     char label;
@@ -28,10 +30,16 @@ void setup() {
         pinMode(btn.pin, INPUT_PULLUP);
     }
 
-	BleGamepadConfiguration *config = new BleGamepadConfiguration();
-	config->setButtonCount(18);
+	config->setButtonCount(16);
+	config->setControllerType(CONTROLLER_TYPE_GAMEPAD);
+	config->setIncludeHome(true);
+	config->setIncludeMenu(true);
+	config->setIncludeStart(true);
+	config->setIncludeSelect(true);
+	config->setAutoReport(true);
+	config->setIncludeGyroscope(true);
 
-	bleGamepad.begin();
+	bleGamepad.begin(config);
 }
 
 void loop() {
@@ -43,8 +51,6 @@ void loop() {
 				bleGamepad.release(btn.Button);
 			}
 		}
-
-		bleGamepad.sendReport();
 	}
 	delay(5);
 }

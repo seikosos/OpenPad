@@ -1,4 +1,4 @@
-# LETS TRY SOMETHING NEW
+# Let's try something a little bit different - Yoav
 
 # OpenPad. Universal ESP32 Controller
 > An open-source, multi-platform game controller built on the ESP32-S3.  
