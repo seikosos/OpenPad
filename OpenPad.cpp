@@ -30,7 +30,7 @@ void setup() {
         pinMode(btn.pin, INPUT_PULLUP);
     }
 
-	config->setButtonCount(16);
+	config->setButtonCount(12);
 	config->setControllerType(CONTROLLER_TYPE_GAMEPAD);
 	config->setIncludeHome(true);
 	config->setIncludeMenu(true);
