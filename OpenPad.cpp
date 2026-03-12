@@ -8,7 +8,6 @@
 // Adafruit_TinyUSB is for usb connections, BleGamepad for normal bluetooth gamepad, Adafruit_MPU6050 for the JoySticks and some general libs for other stuff
 
 BleGamepad bleGamepad("OpenPad", "seikoso", 100);
-
 BleGamepadConfiguration *config = new BleGamepadConfiguration();
 
 struct ButtonConfig {
@@ -19,7 +18,9 @@ struct ButtonConfig {
 
 const ButtonConfig Buttons[] = {
     {4, 'A', BUTTON_1},
-    {5, 'B', BUTTON_2}
+    {5, 'B', BUTTON_2},
+	{6, 'X', BUTTON_3},
+    {7, 'Y', BUTTON_4},
 };
 
 void setup() {
@@ -30,7 +31,7 @@ void setup() {
         pinMode(btn.pin, INPUT_PULLUP);
     }
 
-	config->setButtonCount(12);
+	config->setButtonCount(10);
 	config->setControllerType(CONTROLLER_TYPE_GAMEPAD);
 	config->setIncludeHome(true);
 	config->setIncludeMenu(true);
