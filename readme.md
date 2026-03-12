@@ -7,6 +7,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Platform: ESP32-S3](https://img.shields.io/badge/MCU-ESP32--S3-blue)
 ![Status: Prototype](https://img.shields.io/badge/Status-Prototype-orange)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D81HVM56)
 
 ## Important:
 Recommended to use PlatformIO if you want convenience, Arduino IDE also works.
