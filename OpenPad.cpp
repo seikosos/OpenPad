@@ -9,7 +9,6 @@
 #include "tusb.h" // when i was testing it wouldnt work without this so this is here, more like it kept complaining
 // Adafruit_TinyUSB is for usb connections, BleGamepad for normal bluetooth gamepad, Adafruit_MPU6050 for the JoySticks and some general libs for other stuff
 
-#include "ButtonConfig.h"
 #include "Handlers/BleGamepadHandler.h"
 
 std::map<String, Bounce> *debouncers;
