@@ -1,3 +1,4 @@
+#pragma once
 #include <BleGamepad.h>
 
 struct ButtonConfig {

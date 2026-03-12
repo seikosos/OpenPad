@@ -11,11 +11,11 @@
 
 #include "Handlers/BleGamepadHandler.h"
 
-std::map<String, Bounce> *debouncers;
+std::map<String, Bounce> *debouncers = new std::map<String, Bounce>;
 
 BleGamepad *bleGamepad = new BleGamepad("OpenPad", "seikoso", 100);
 BleGamepadConfiguration *config = new BleGamepadConfiguration();
-BleGamepadHandler Blehandler;
+BleGamepadHandler Blehandler = BleGamepadHandler();
 
 void setup() {
 	Serial.begin(115200);
