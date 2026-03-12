@@ -2,33 +2,21 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_TinyUSB.h> 
-#include <BleGamepad.h>       
-#include <Adafruit_MPU6050.h>   
+#include <BleGamepad.h>
+#include <Bounce2.h>    
+#include <Adafruit_MPU6050.h>
+#include <map> 
 #include "tusb.h" // when i was testing it wouldnt work without this so this is here, more like it kept complaining
 // Adafruit_TinyUSB is for usb connections, BleGamepad for normal bluetooth gamepad, Adafruit_MPU6050 for the JoySticks and some general libs for other stuff
 
-BleGamepad bleGamepad("OpenPad", "seikoso", 100);
+#include "ButtonConfig.h"
+#include "Handlers/BleGamepadHandler.h"
+
+std::map<String, Bounce> *debouncers;
+
+BleGamepad *bleGamepad = new BleGamepad("OpenPad", "seikoso", 100);
 BleGamepadConfiguration *config = new BleGamepadConfiguration();
-
-struct ButtonConfig {
-    int pin;
-    char label;
-	int Button;
-};
-
-// LSP = Left Stick Click, RSP = Right Stick Click
-const ButtonConfig Buttons[] = {
-    {4, 'A', BUTTON_1},
-    {5, 'B', BUTTON_2},
-	{6, 'X', BUTTON_3},
-    {7, 'Y', BUTTON_4},
-	{15, 'L', BUTTON_5},
-    {16, 'R', BUTTON_6},
-	{17, 'ZL', BUTTON_7},
-    {18, 'ZR', BUTTON_8},
-	{8, 'LSC', BUTTON_9},
-    {3, 'RSC', BUTTON_10},
-};
+BleGamepadHandler Blehandler;
 
 void setup() {
 	Serial.begin(115200);
@@ -36,29 +24,33 @@ void setup() {
 
 	for (const ButtonConfig& btn : Buttons) {
         pinMode(btn.pin, INPUT_PULLUP);
+
+		debouncers->at(btn.label) = Bounce();
+		debouncers->at(btn.label).attach(btn.pin);
+        debouncers->at(btn.label).interval(5);
     }
 
-	config->setButtonCount(10);
-	config->setControllerType(CONTROLLER_TYPE_GAMEPAD);
-	config->setIncludeHome(true);
-	config->setIncludeMenu(true);
-	config->setIncludeStart(true);
-	config->setIncludeSelect(true);
-	config->setAutoReport(true);
-	config->setIncludeGyroscope(true);
+	for (const ButtonConfig& btn : SpecialButtons) {
+		pinMode(btn.pin, INPUT_PULLUP);
 
-	bleGamepad.begin(config);
+		debouncers->at(btn.label) = Bounce();
+		debouncers->at(btn.label).attach(btn.pin);
+        debouncers->at(btn.label).interval(5);
+	}
+
+	debouncers->at("Home").update();
+	//also at some point i need to check if usb conenction supports using this controller as controlelr andthen use usb protocol for controller but thats later issue
+	if (debouncers->at("Home").fell()) {
+		// insert code later for other modes cuz to lazy rn
+	} else {
+    	Blehandler.Init(config, bleGamepad, debouncers);
+	}
 }
 
 void loop() {
-	if (bleGamepad.isConnected()) {
-		for (const auto& btn : Buttons) {
-			if (digitalRead(btn.pin) == LOW) {
-				bleGamepad.press(btn.Button);
-			} else {
-				bleGamepad.release(btn.Button);
-			}
-		}
+	if (bleGamepad->isConnected()) {
+		Blehandler.MainButtons();
+		Blehandler.SpecialButton();
 	}
 	delay(5);
 }
