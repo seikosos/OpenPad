@@ -1,15 +1,20 @@
 #include "BleGamepadHandler.h"
+#include <Adafruit_MCP23X17.h>
 
 void BleGamepadHandler::MainButtons() {
+    uint16_t pinStates = mcp->readGPIOAB();
     bool sendReport = false;
-    for (ButtonConfig& btn : Buttons) {
-        btn.debouncer.update();
 
-        if (btn.debouncer.fell()) {
-            bleGamepad->press(btn.Button);
-            sendReport = true;
-        } else if (btn.debouncer.rose()) {
-            bleGamepad->release(btn.Button);
+    for (ButtonConfig& btn : Buttons) {
+        bool currentState = !((pinStates >> btn.mcpPin) & 1);
+
+        if (currentState != btn.lastState) {
+            if (currentState) {
+                bleGamepad->press(btn.Button);
+            } else {
+                bleGamepad->release(btn.Button);
+            }
+            btn.lastState = currentState;
             sendReport = true;
         }
     }
@@ -19,20 +24,23 @@ void BleGamepadHandler::MainButtons() {
 };
 
 void BleGamepadHandler::SpecialButton() {
+    uint16_t pinStates = mcp->readGPIOAB();
     bool sendReport = false;
-    for (ButtonConfig& btn : SpecialButtons) {
-        btn.debouncer.update();
 
-        if (btn.debouncer.changed()) {
-            bool pressed = btn.debouncer.fell();
+    for (ButtonConfig& btn : SpecialButtons) {
+        bool currentState = !((pinStates >> btn.mcpPin) & 1);
+
+        if (currentState != btn.lastState) {
 
             if (btn.label == "Home") {
-                pressed ? bleGamepad->pressHome() : bleGamepad->releaseHome();
+                currentState ? bleGamepad->pressHome() : bleGamepad->releaseHome();
                 sendReport = true;
             } else if (btn.label == "Menu") {
-                pressed ? bleGamepad->pressMenu() : bleGamepad->releaseMenu();
+                currentState ? bleGamepad->pressMenu() : bleGamepad->releaseMenu();
                 sendReport = true;
             }
+            btn.lastState = currentState;
+            sendReport = true;
         }
     }
 
@@ -41,9 +49,10 @@ void BleGamepadHandler::SpecialButton() {
     }
 };
 
-void BleGamepadHandler::Init(BleGamepadConfiguration* configd, BleGamepad* bleGamepadd) {
+void BleGamepadHandler::Init(BleGamepadConfiguration* configd, BleGamepad* bleGamepadd, Adafruit_MCP23X17* mcpp) {
     config = configd;
     bleGamepad = bleGamepadd;
+    mcp = mcpp;
 
     config->setButtonCount(10);
     config->setControllerType(CONTROLLER_TYPE_GAMEPAD);
