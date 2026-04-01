@@ -2,12 +2,13 @@
 #include "Handler.h"
 #include <BleGamepad.h>
 
-class BleGamepadHandler : public Handler {
+class WiiHandler : public Handler {
 public:
     BleGamepadConfiguration* config;
     BleGamepad* bleGamepad;
+    std::map<String, Bounce> *debouncers;
 
     void MainButtons() override;
     void SpecialButton() override;
-    void Init(BleGamepadConfiguration* configd, BleGamepad* bleGamepadd);
+    void Init();
 };

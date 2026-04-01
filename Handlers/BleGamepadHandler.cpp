@@ -2,13 +2,13 @@
 
 void BleGamepadHandler::MainButtons() {
     bool sendReport = false;
-    for (const auto& btn : Buttons) {
-        debouncers->at(btn.label).update();
+    for (ButtonConfig& btn : Buttons) {
+        btn.debouncer.update();
 
-        if (debouncers->at(btn.label).fell()) {
+        if (btn.debouncer.fell()) {
             bleGamepad->press(btn.Button);
             sendReport = true;
-        } else if (debouncers->at(btn.label).rose()) {
+        } else if (btn.debouncer.rose()) {
             bleGamepad->release(btn.Button);
             sendReport = true;
         }
@@ -18,35 +18,32 @@ void BleGamepadHandler::MainButtons() {
     }
 };
 
-bool HomeButton(Bounce state, BleGamepad *bleGamepad) {
-    if (state.fell()) {
-        bleGamepad->pressHome();
-        return true;
-    } else if (state.rose()) {
-        bleGamepad->releaseHome();
-        return true;
-    }
-    return false;
-};
-
 void BleGamepadHandler::SpecialButton() {
     bool sendReport = false;
-    for (const auto& btn : SpecialButtons) {
-        debouncers->at(btn.label).update();
+    for (ButtonConfig& btn : SpecialButtons) {
+        btn.debouncer.update();
 
-        if (btn.label == "Home") {
-            HomeButton(debouncers->at(btn.label), bleGamepad);
+        if (btn.debouncer.changed()) {
+            bool pressed = btn.debouncer.fell();
+
+            if (btn.label == "Home") {
+                pressed ? bleGamepad->pressHome() : bleGamepad->releaseHome();
+                sendReport = true;
+            } else if (btn.label == "Menu") {
+                pressed ? bleGamepad->pressMenu() : bleGamepad->releaseMenu();
+                sendReport = true;
+            }
         }
     }
+
     if (sendReport) {
         bleGamepad->sendReport();
     }
 };
 
-void BleGamepadHandler::Init(BleGamepadConfiguration* configd, BleGamepad* bleGamepadd, std::map<String, Bounce> *debouncer) {
+void BleGamepadHandler::Init(BleGamepadConfiguration* configd, BleGamepad* bleGamepadd) {
     config = configd;
     bleGamepad = bleGamepadd;
-    debouncers = debouncer;
 
     config->setButtonCount(10);
     config->setControllerType(CONTROLLER_TYPE_GAMEPAD);

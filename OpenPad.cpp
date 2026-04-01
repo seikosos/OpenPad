@@ -11,38 +11,48 @@
 
 #include "Handlers/BleGamepadHandler.h"
 
-std::map<String, Bounce> *debouncers = new std::map<String, Bounce>;
-
 BleGamepad *bleGamepad = new BleGamepad("OpenPad", "seikoso", 100);
 BleGamepadConfiguration *config = new BleGamepadConfiguration();
 BleGamepadHandler Blehandler = BleGamepadHandler();
+
+ButtonConfig* homeBtn = nullptr;
 
 void setup() {
 	Serial.begin(115200);
 	Serial.println("hi i work");
 
-	for (const ButtonConfig& btn : Buttons) {
-        pinMode(btn.pin, INPUT_PULLUP);
+	for (ButtonConfig& btn : Buttons) {
+		if (btn.pin >= 34) {
+			pinMode(btn.pin, INPUT);
+		} else {
+			pinMode(btn.pin, INPUT_PULLUP);
+		}
 
-		debouncers->at(btn.label) = Bounce();
-		debouncers->at(btn.label).attach(btn.pin);
-        debouncers->at(btn.label).interval(5);
-    }
-
-	for (const ButtonConfig& btn : SpecialButtons) {
-		pinMode(btn.pin, INPUT_PULLUP);
-
-		debouncers->at(btn.label) = Bounce();
-		debouncers->at(btn.label).attach(btn.pin);
-        debouncers->at(btn.label).interval(5);
+		btn.debouncer.attach(btn.pin);
+    	btn.debouncer.interval(5);
 	}
 
-	debouncers->at("Home").update();
+	for (ButtonConfig& btn : SpecialButtons) {
+		if (btn.pin >= 34) {
+			pinMode(btn.pin, INPUT);
+		} else {
+			pinMode(btn.pin, INPUT_PULLUP);
+		}
+
+		btn.debouncer.attach(btn.pin);
+    	btn.debouncer.interval(5);
+
+		if (btn.label == "Home") {
+            homeBtn = &btn;
+        }
+	}
+
+	homeBtn->debouncer.update();
 	//also at some point i need to check if usb conenction supports using this controller as controlelr andthen use usb protocol for controller but thats later issue
-	if (debouncers->at("Home").fell()) {
+	if (homeBtn->debouncer.fell()) {
 		// insert code later for other modes cuz to lazy rn
 	} else {
-    	Blehandler.Init(config, bleGamepad, debouncers);
+    	Blehandler.Init(config, bleGamepad);
 	}
 }
 
