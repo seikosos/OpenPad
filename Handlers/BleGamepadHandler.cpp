@@ -1,5 +1,4 @@
 #include "BleGamepadHandler.h"
-#include <Adafruit_MCP23X17.h>
 
 void BleGamepadHandler::MainButtons() {
     uint16_t pinStates = mcp->readGPIOAB();

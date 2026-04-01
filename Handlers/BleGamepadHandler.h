@@ -1,6 +1,7 @@
 #pragma once
 #include "Handler.h"
 #include <BleGamepad.h>
+#include <Adafruit_MCP23X17.h>
 
 class BleGamepadHandler : public Handler {
 public:
