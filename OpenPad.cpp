@@ -16,35 +16,41 @@ BleGamepadHandler Blehandler = BleGamepadHandler();
 
 ButtonConfig* homeBtn = nullptr;
 
-Adafruit_MCP23X17 mcp;
+Adafruit_MCP23X17 mcp1;
+Adafruit_MCP23X17 mcp2;
 
 void setup() {
 	Serial.begin(115200);
 	Serial.println("hi i work");
 
-	if (!mcp.begin_I2C(0x20)) {
+	if (!mcp1.begin_I2C(0x20)) {
+		Serial.println("MCP23017 Error!");
+	}
+
+	if (!mcp2.begin_I2C(0x21)) {
 		Serial.println("MCP23017 Error!");
 	}
 
 	for (ButtonConfig& btn : Buttons) {
-		mcp.pinMode(btn.mcpPin, INPUT_PULLUP);
+		mcp1.pinMode(btn.mcpPin, INPUT_PULLUP);
 	}
 
 	for (ButtonConfig& btn : SpecialButtons) {
-		mcp.pinMode(btn.mcpPin, INPUT_PULLUP);
+		mcp2.pinMode(btn.mcpPin, INPUT_PULLUP);
 
 		if (btn.label == "Home") {
             homeBtn = &btn;
         }
 	}
 
-	uint16_t pinStates = mcp.readGPIOAB();
+	uint16_t pinStates = mcp2.readGPIOAB();
 	bool isHomePressed = !((pinStates >> homeBtn->mcpPin) & 1);
-	//also at some point i need to check if usb conenction supports using this controller as controlelr andthen use usb protocol for controller but thats later issue
+	// also at some point i need to check if usb connection supports using this controller as controller and then use usb protocol for controller but thats later issue
+	// CH9329 for usb support
 	if (homeBtn->lastState != isHomePressed) {
 		homeBtn->lastState = isHomePressed;
 	} else {
-    	Blehandler.Init(config, bleGamepad, &mcp);
+    	Blehandler.Init(config, bleGamepad, &mcp1, &mcp2);
 	}
 }
 

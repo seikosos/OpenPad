@@ -1,6 +1,5 @@
 #pragma once
 #include <map>
-#include <Bounce2.h>
 #include "ButtonConfig.h"
 
 struct Handler {

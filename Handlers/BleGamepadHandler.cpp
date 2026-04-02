@@ -1,18 +1,14 @@
 #include "BleGamepadHandler.h"
 
 void BleGamepadHandler::MainButtons() {
-    uint16_t pinStates = mcp->readGPIOAB();
+    uint16_t pinStates = mcp1->readGPIOAB();
     bool sendReport = false;
 
     for (ButtonConfig& btn : Buttons) {
         bool currentState = !((pinStates >> btn.mcpPin) & 1);
 
         if (currentState != btn.lastState) {
-            if (currentState) {
-                bleGamepad->press(btn.Button);
-            } else {
-                bleGamepad->release(btn.Button);
-            }
+            currentState ? bleGamepad->press(btn.Button) : bleGamepad->release(btn.Button);
             btn.lastState = currentState;
             sendReport = true;
         }
@@ -23,20 +19,25 @@ void BleGamepadHandler::MainButtons() {
 };
 
 void BleGamepadHandler::SpecialButton() {
-    uint16_t pinStates = mcp->readGPIOAB();
+    uint16_t pinStates2 = mcp2->readGPIOAB();
     bool sendReport = false;
 
     for (ButtonConfig& btn : SpecialButtons) {
-        bool currentState = !((pinStates >> btn.mcpPin) & 1);
+        bool currentState = !((pinStates2 >> btn.mcpPin) & 1);
 
         if (currentState != btn.lastState) {
-
             if (btn.label == "Home") {
                 currentState ? bleGamepad->pressHome() : bleGamepad->releaseHome();
-                sendReport = true;
+            } else if (btn.label == "Select") {
+                currentState ? bleGamepad->pressSelect() : bleGamepad->releaseSelect();
+            } else if (btn.label == "Start") {
+                currentState ? bleGamepad->pressStart() : bleGamepad->releaseStart();
             } else if (btn.label == "Menu") {
                 currentState ? bleGamepad->pressMenu() : bleGamepad->releaseMenu();
-                sendReport = true;
+            } else if (btn.label == "LSC" || btn.label == "RSC") {
+                currentState ? bleGamepad->press(btn.Button) : bleGamepad->release(btn.Button);
+            } else {
+                
             }
             btn.lastState = currentState;
             sendReport = true;
@@ -48,12 +49,13 @@ void BleGamepadHandler::SpecialButton() {
     }
 };
 
-void BleGamepadHandler::Init(BleGamepadConfiguration* configd, BleGamepad* bleGamepadd, Adafruit_MCP23X17* mcpp) {
+void BleGamepadHandler::Init(BleGamepadConfiguration* configd, BleGamepad* bleGamepadd, Adafruit_MCP23X17* mcpp1, Adafruit_MCP23X17* mcpp2) {
     config = configd;
     bleGamepad = bleGamepadd;
-    mcp = mcpp;
+    mcp1 = mcpp1;
+    mcp2 = mcpp2;
 
-    config->setButtonCount(10);
+    config->setButtonCount(8);
     config->setControllerType(CONTROLLER_TYPE_GAMEPAD);
     config->setIncludeHome(true);
     config->setIncludeMenu(true);
@@ -61,6 +63,7 @@ void BleGamepadHandler::Init(BleGamepadConfiguration* configd, BleGamepad* bleGa
     config->setIncludeSelect(true);
     config->setAutoReport(false);
     config->setIncludeGyroscope(true);
+    config->setHatSwitchCount(1);
 
     bleGamepad->begin(config);
 };

@@ -1,6 +1,5 @@
 #pragma once
 #include <BleGamepad.h>
-#include <Bounce2.h>
 
 struct ButtonConfig {
     uint8_t mcpPin;
@@ -21,12 +20,14 @@ inline ButtonConfig Buttons[] = {
 };
 
 inline ButtonConfig SpecialButtons[] = {
-    {8, "UP", DPAD_UP},
-    {9, "DOWN", DPAD_DOWN},
-    {10, "LEFT", DPAD_LEFT},
-    {11, "RIGHT", DPAD_RIGHT},
-    {12, "LSC", BUTTON_9},
-    {13, "RSC", BUTTON_10},
-    {14, "Home", 0},
-    {15, "Select", 0}
+    {0, "UP", DPAD_UP},
+    {1, "DOWN", DPAD_DOWN},
+    {2, "LEFT", DPAD_LEFT},
+    {3, "RIGHT", DPAD_RIGHT},
+    {4, "LSC", BUTTON_9},
+    {5, "RSC", BUTTON_10},
+    {6, "Home", 0, false},
+    {7, "Select", 0},
+    {8, "Start", 0},
+    {9, "Menu", 0},
 };
