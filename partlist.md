@@ -1,4 +1,5 @@
-# this is the list of parts for the universal controller that are recommended
+## this is the list of parts for the universal controller that are recommended
+##### might link to parts in future
 
 - ESP32 Devkit V1
 - MCP3208-CI/P

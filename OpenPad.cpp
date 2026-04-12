@@ -24,11 +24,11 @@ void setup() {
 	Serial.println("hi i work");
 
 	if (!mcp1.begin_I2C(0x20)) {
-		Serial.println("MCP23017 Error!");
+		Serial.println("MCP23017 1 Error!");
 	}
 
 	if (!mcp2.begin_I2C(0x21)) {
-		Serial.println("MCP23017 Error!");
+		Serial.println("MCP23017 2 Error!");
 	}
 
 	for (ButtonConfig& btn : Buttons) {

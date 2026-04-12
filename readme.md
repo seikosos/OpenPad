@@ -11,9 +11,7 @@
 
 ## Important:
 Recommended to use PlatformIO if you want convenience, Arduino IDE also works.
-THIS PROJECT HAS SWITCHED TO USE THE ESP32-DEVKIT-V1 AS THE ESP32-S3 ONLY SUPPORTS BLE, IMPORTANT FOR LATER HANDLERS (including wii)
-SOME CODE WILL BE COMPATIBLE TOWARDS THE ESP32-S3 BUT ALOT WILL REQUIRE A MANUAL REWRITE
-ALSO NOW USES AN MCP23017 FOR MORE PINS TO WORK WITH
+[Recommended part list](partlist.md)
 This project Base uses the ESP32-DEVKIT-V1. Reference here: ![ESP32-DEVKIT-V1](ESP32-DEVKIT-V1-pinout-36-GPIOs.jpg)
 
 ## What Is OpenPad?
